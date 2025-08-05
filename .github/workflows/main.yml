@@ -1,0 +1,31 @@
+name: Next JS build with artifacts and caching
+
+on:
+  push:
+    branches: [main]  # ✅ space fixed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3.9.1
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: npm run build && npm run export  # ✅ export required to get 'out/' folder
+
+      - name: Upload build as artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: nextjs-build
+          path: out/  # ✅ 'out' is valid only after export
